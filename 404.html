@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mario Resume - Akhila Jagarlapudi</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link href="public/main.css?v=1" rel="stylesheet">
+
+    <!-- Social preview (replace yourdomain.com after you connect your domain) -->
+    <meta property="og:title" content="Mario Resume - Akhila Jagarlapudi">
+    <meta property="og:image" content="https://yourdomain.com/public/img/social.png">
+    <meta property="og:image:secure_url" content="https://yourdomain.com/public/img/social.png">
+    <meta property="og:image:alt" content="Mario Resume - Akhila Jagarlapudi">
+    <meta property="og:image:type" content="image/png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mario Resume - Akhila Jagarlapudi">
+    <meta name="twitter:image" content="https://yourdomain.com/public/img/social.png">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+<body>
+    <div id="scroll">
+        <div class="box">
+            <b>HELLO</b>
+            I’m Akhila Jagarlapudi 👋<br><br>
+This is a tiny JavaScript experiment where my resume behaves like a side‑scrolling game.<br><br>
+Use ← / → on desktop, or the big arrow buttons on mobile.
+        </div>
+        <div class="box">
+            <b>ABOUT</b>
+            Master’s student at Carnegie Mellon (MISM), graduating Dec 2025.<br><br>
+I build products at the intersection of humans, data, and “why is this workflow like this?”
+        </div>
+        <div class="box">
+            <b>SKILLS</b>
+            - Product: PRDs, roadmaps, sprint planning, stakeholder wrangling<br><br>
+- Data: SQL, dashboards, experimentation / A/B testing<br><br>
+- Tech: Java, Python, HTML/CSS/JS, APIs, Git, Jenkins
+        </div>
+        <div class="box">
+            <b>EXPERIENCE</b>
+            - Tech Product Manager, Qbeast (Pittsburgh) — 0→1 Customer Portal MVP<br><br>
+- Technology Analyst, Citi (India) — fintech + compliance systems<br><br>
+- Research/TA work at CMU — analytics, data viz, and lots of debugging
+        </div>
+        <div class="box">
+            <b>HIGHLIGHTS</b>
+            - Improved query latency by ~30% and reduced compute cost by ~14% (benchmarking + prototyping)<br><br>
+- Authored 3 IEEE papers (deepfake detection, leaf disease ML, migraine tech)<br><br>
+- Led global tech/community initiatives (Citi Global Tech Fest site lead, DEI work)
+        </div>
+        <div class="box">
+            <b>PROJECTS</b>
+            - Mobile‑to‑Cloud apps (Android + Java services + MongoDB dashboards)<br><br>
+- Social listening analytics for NVIDIA GTC (segmentation + metrics + insights)<br><br>
+- Product experiments inspired by art ✨
+        </div>
+        <div class="box">
+            <b>EDUCATION</b>
+            - Carnegie Mellon University — MISM (Dec 2025)<br><br>
+- Undergrad: engineering + research publications
+        </div>
+        <div class="box">
+            <b>CONTACT</b>
+            - Email: <a href="mailto:your.email@domain.com">your.email@domain.com</a><br>
+- LinkedIn: <a href="https://www.linkedin.com/" target="_blank">linkedin.com/in/your-handle</a><br>
+- GitHub: <a href="https://github.com/" target="_blank">github.com/your-handle</a><br><br>
+If this made you smile, that’s a win already 🙂
+        </div>
+    </div>
+
+    <div id="floor">
+        <img id="mario" src="public/img/blank.png" alt="mario">
+    </div>
+
+    <div id="btn_left">
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-left-square-fill" fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+                d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm9.5 8.5a.5.5 0 0 0 0-1H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5z" />
+        </svg>
+    </div>
+
+    <div id="btn_right">
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-square-fill" fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+                d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm2.5 8.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z" />
+        </svg>
+    </div>
+
+    <script src="public/game.js?v=1"></script>
+
+    <audio id="bg_music" loop>
+        <source src="public/music.mp3" type="audio/mp3">
+    </audio>
+</body>
+</html>
