@@ -7,67 +7,87 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-    <link href="public/main.css?v=1" rel="stylesheet">
+    <link href="public/main.css?v=3" rel="stylesheet">
 
-    <!-- Social preview (replace yourdomain.com after you connect your domain) -->
+    <!-- Social preview -->
     <meta property="og:title" content="Mario Resume - Akhila Jagarlapudi">
-    <meta property="og:image" content="https://yourdomain.com/public/img/social.png">
-    <meta property="og:image:secure_url" content="https://yourdomain.com/public/img/social.png">
+    <meta property="og:image" content="https://jagarlapudi.com/public/img/social.png">
+    <meta property="og:image:secure_url" content="https://jagarlapudi.com/public/img/social.png">
     <meta property="og:image:alt" content="Mario Resume - Akhila Jagarlapudi">
     <meta property="og:image:type" content="image/png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Mario Resume - Akhila Jagarlapudi">
-    <meta name="twitter:image" content="https://yourdomain.com/public/img/social.png">
+    <meta name="twitter:image" content="https://jagarlapudi.com/public/img/social.png">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
 <body>
+    <!-- Top navigation: click a section and Mario warps there -->
+    <div id="nav">
+        <a class="nav_link" data-index="0">HELLO</a>
+        <a class="nav_link" data-index="1">ABOUT</a>
+        <a class="nav_link" data-index="2">SKILLS</a>
+        <a class="nav_link" data-index="3">EXPERIENCE</a>
+        <a class="nav_link" data-index="4">PROJECTS</a>
+        <a class="nav_link" data-index="5">RESEARCH</a>
+        <a class="nav_link" data-index="6">HIGHLIGHTS</a>
+        <a class="nav_link" data-index="7">EDUCATION</a>
+        <a class="nav_link" data-index="8">CONTACT</a>
+        <a class="nav_link nav_download" href="public/resume.pdf" download="Akhila_Jagarlapudi_Resume.pdf">⬇ RESUME</a>
+    </div>
+
     <div id="scroll">
         <div class="box">
             <b>HELLO</b>
             I’m Akhila Jagarlapudi 👋<br><br>
 This is a tiny JavaScript experiment where my resume behaves like a side‑scrolling game.<br><br>
-Use ← / → on desktop, or the big arrow buttons on mobile.
+Use ← / → on desktop, or the big arrow buttons on mobile — or tap a section up top to warp there.
         </div>
         <div class="box">
             <b>ABOUT</b>
-            Master’s student at Carnegie Mellon (MISM), graduating Dec 2025.<br><br>
-I build products at the intersection of humans, data, and “why is this workflow like this?”
+            A curious, caffeine‑fueled explorer who loves tackling challenges head‑on — especially the ones that need a blend of creativity and problem‑solving.<br><br>
+From high‑stakes tech projects to orchestrating big events at Citi, I balance responsibility with fun. I love collaborating, stay socially conscious, and keep an eye out for practical solutions that shake things up for the better.
         </div>
         <div class="box">
             <b>SKILLS</b>
-            - Product: PRDs, roadmaps, sprint planning, stakeholder wrangling<br><br>
-- Data: SQL, dashboards, experimentation / A/B testing<br><br>
-- Tech: Java, Python, HTML/CSS/JS, APIs, Git, Jenkins
+            - Product: PRDs/MRDs, roadmaps, A/B testing, metric design, stakeholder comms<br><br>
+- Data &amp; ML: Python, SQL, scikit‑learn, PCA, clustering, OpenAI API, ETL<br><br>
+- Tech: Java, Spring Boot, REST APIs, AWS/GCS/Azure, MongoDB, Git, Jenkins, Tableau
         </div>
         <div class="box">
             <b>EXPERIENCE</b>
-            - Tech Product Manager, Qbeast (Pittsburgh) — 0→1 Customer Portal MVP<br><br>
-- Technology Analyst, Citi (India) — fintech + compliance systems<br><br>
-- Research/TA work at CMU — analytics, data viz, and lots of debugging
-        </div>
-        <div class="box">
-            <b>HIGHLIGHTS</b>
-            - Improved query latency by ~30% and reduced compute cost by ~14% (benchmarking + prototyping)<br><br>
-- Authored 3 IEEE papers (deepfake detection, leaf disease ML, migraine tech)<br><br>
-- Led global tech/community initiatives (Citi Global Tech Fest site lead, DEI work)
+            - Tech Product Manager, Multiplier × Qbeast (Pittsburgh) — led 0→1 Customer Portal MVP; cut query latency 30% &amp; compute cost 14%<br><br>
+- Technology Analyst, Citi (Pune) — compliance surveillance for 200K+ employees; IFRS9 reporting on $120M/mo
         </div>
         <div class="box">
             <b>PROJECTS</b>
-            - Mobile‑to‑Cloud apps (Android + Java services + MongoDB dashboards)<br><br>
-- Social listening analytics for NVIDIA GTC (segmentation + metrics + insights)<br><br>
-- Product experiments inspired by art ✨
+            - NVIDIA × CMU — social analytics on 30K+ GTC posts; segmentation driving a 12% lift in campaign reach<br><br>
+- Kearney × Access Holdings — Python labor‑market indices (PCA) + OpenAI exec chatbot for macro insights<br><br>
+- Distributed Mobile‑to‑Cloud app — Android client, REST backend, MongoDB analytics dashboard
+        </div>
+        <div class="box">
+            <b>RESEARCH</b>
+            Three IEEE publications:<br><br>
+- DeepFake Detection (2022) — 97M‑parameter model, 3000+ FPS on NVIDIA DGX‑1<br><br>
+- Leaf Disease Classification (2021) — CNN across 42 species, 92.3% accuracy<br><br>
+- EEG Migraine Detection (2021) — VR‑integrated app for early prediction
+        </div>
+        <div class="box">
+            <b>HIGHLIGHTS</b>
+            - Cut query latency 30% &amp; compute cost 14% via Z‑ordering + Parquet tuning<br><br>
+- Raised CI/CD test coverage 67% → 83%, reducing post‑release defects 27%<br><br>
+- Zero‑defect cross‑border data migration of 1M+ daily transactions (97.5% reliability)
         </div>
         <div class="box">
             <b>EDUCATION</b>
-            - Carnegie Mellon University — MISM (Dec 2025)<br><br>
-- Undergrad: engineering + research publications
+            - Carnegie Mellon University — M.S. Information Systems Management (MISM), Dec 2025, with Distinction<br><br>
+- Veermata Jijabai Technological Institute (VJTI), Mumbai — B.Tech, Electronics &amp; Telecommunication Engineering, 2022
         </div>
         <div class="box">
             <b>CONTACT</b>
-            - Email: <a href="mailto:your.email@domain.com">your.email@domain.com</a><br>
-- LinkedIn: <a href="https://www.linkedin.com/" target="_blank">linkedin.com/in/your-handle</a><br>
-- GitHub: <a href="https://github.com/" target="_blank">github.com/your-handle</a><br><br>
+            - Email: <a href="mailto:ajagarla@alumni.cmu.edu">ajagarla@alumni.cmu.edu</a><br>
+- LinkedIn: <a href="https://www.linkedin.com/in/akhilajagarlapudi" target="_blank">linkedin.com/in/akhilajagarlapudi</a><br>
+- GitHub: <a href="https://github.com/akhilajags" target="_blank">github.com/akhilajags</a><br><br>
 If this made you smile, that’s a win already 🙂
         </div>
     </div>
@@ -92,7 +112,7 @@ If this made you smile, that’s a win already 🙂
         </svg>
     </div>
 
-    <script src="public/game.js?v=1"></script>
+    <script src="public/game.js?v=3"></script>
 
     <audio id="bg_music" loop>
         <source src="public/music.mp3" type="audio/mp3">
