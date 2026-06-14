@@ -13,3 +13,49 @@ b{margin-bottom:15px;font-size:30px;}
 /* Akhila custom tweaks */
 .box{overflow:auto;}
 @media (max-width: 480px){.box{width:260px;margin-left:60px;}}
+
+/* Top navigation bar */
+#nav{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:10000;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:6px 14px;
+    padding:10px 14px;
+    background:rgba(0,0,0,0.45);
+    font-size:22px;
+}
+#nav .nav_link{
+    color:#fff;
+    cursor:pointer;
+    text-decoration:none;
+    padding:2px 6px;
+    border:2px solid transparent;
+    white-space:nowrap;
+}
+#nav .nav_link:hover{
+    color:#FFD23F;
+    border-color:#FFD23F;
+}
+#nav .nav_link.active{
+    color:#FFD23F;
+    border-color:#fff;
+}
+@media (max-width: 480px){
+    #nav{font-size:18px;gap:4px 8px;padding:8px;}
+}
+
+/* Download resume link */
+#nav .nav_download{
+    background:#FFD23F;
+    color:#000;
+    border-color:#000;
+    font-weight:bold;
+}
+#nav .nav_download:hover{
+    background:#fff;
+    color:#000;
+    border-color:#000;
+}
