@@ -152,3 +152,37 @@ $(function(){
         setScrollWidth();
     });
 });
+
+// --- Akhila custom: warp Mario directly to a section, then keep left/right working from there
+function jumpTo(index) {
+    playMusic();
+    stopMove();
+
+    var $box = $('#scroll .box').eq(index);
+    if (!$box.length) return;
+
+    // Where the box currently sits inside #scroll (relative to scroll's own left edge)
+    var boxOffset = $box.position().left;
+
+    // We want that box to land roughly under Mario (screen center).
+    // scroll_x is the #scroll element's "left". Mario is fixed near center.
+    var marioCenter = $(window).width() / 2 - 30; // matches #mario margin-left:-30px
+    scroll_x = marioCenter - boxOffset;
+
+    // Keep within the same wrap bounds the movement logic uses
+    $('#scroll').css('left', scroll_x + 'px');
+
+    // Reset facing so the next key/arrow press behaves predictably
+    direction = false;
+
+    // Mark active nav link
+    $('.nav_link').removeClass('active');
+    $('.nav_link[data-index="' + index + '"]').addClass('active');
+}
+
+$(function(){
+    $('.nav_link[data-index]').on('click', function(){
+        var idx = parseInt($(this).attr('data-index'), 10);
+        jumpTo(idx);
+    });
+});
