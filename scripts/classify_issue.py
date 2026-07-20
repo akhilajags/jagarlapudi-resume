@@ -9,14 +9,23 @@ import os
 import anthropic
 from github_utils import add_label, get_issue_labels, remove_label, upsert_comment
 
-ALLOWED_LABELS = ["feature", "bug", "refactor", "docs", "question", "chore"]
+# Mirrors Azure DevOps (Agile process) work item types so triage feels familiar.
+ALLOWED_LABELS = ["epic", "feature", "user-story", "task", "bug", "issue"]
 COMMENT_MARKER = "🤖 **Issue Classifier Agent**"
 
 SYSTEM_PROMPT = f"""You are an issue triage assistant for a software project.
-Classify the GitHub issue into exactly one of these categories: {', '.join(ALLOWED_LABELS)}.
+Classify the GitHub issue into exactly one of these Azure DevOps (Agile) work item types: {', '.join(ALLOWED_LABELS)}.
+
+Use these definitions:
+- epic: a large body of work spanning multiple features or a broad initiative.
+- feature: a shippable piece of functionality, typically delivering value across several stories.
+- user-story: a single user-facing requirement or enhancement, small enough to deliver in one iteration.
+- task: concrete implementation work, chores, refactors, docs, or maintenance.
+- bug: something is broken or not behaving as intended.
+- issue: an impediment, question, or blocker that isn't itself work to build.
 
 Respond with ONLY valid JSON, no markdown fences, no extra text, in this exact shape:
-{{"label": "one of the allowed categories", "confidence": 0.0-1.0, "reasoning": "one short sentence"}}
+{{"label": "one of the allowed work item types", "confidence": 0.0-1.0, "reasoning": "one short sentence"}}
 """
 
 
