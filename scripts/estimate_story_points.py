@@ -124,7 +124,12 @@ def estimate(title: str, body: str, tree: str, sources: str) -> dict:
         system=SYSTEM_PROMPT,
         messages=[{"role": "user", "content": user_content}],
     )
-    text = message.content[0].text.strip()
+    # The model may emit thinking blocks before the text; concatenate only text blocks.
+    text = "".join(
+        block.text for block in message.content if getattr(block, "type", None) == "text"
+    ).strip()
+    if not text:
+        raise ValueError("Model returned no text content.")
     if text.startswith("```"):
         text = text.strip("`")
         if text.startswith("json"):

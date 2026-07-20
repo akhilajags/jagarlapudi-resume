@@ -39,7 +39,12 @@ def classify(title: str, body: str) -> dict:
             {"role": "user", "content": f"Title: {title}\n\nBody:\n{body or '(no description provided)'}"}
         ],
     )
-    text = message.content[0].text.strip()
+    # The model may emit thinking blocks before the text; concatenate only text blocks.
+    text = "".join(
+        block.text for block in message.content if getattr(block, "type", None) == "text"
+    ).strip()
+    if not text:
+        raise ValueError("Model returned no text content.")
     if text.startswith("```"):
         text = text.strip("`")
         if text.startswith("json"):
