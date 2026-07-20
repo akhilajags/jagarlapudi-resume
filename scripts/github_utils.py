@@ -90,13 +90,22 @@ def remove_label(issue_number: int, label: str):
         resp.raise_for_status()
 
 
-def get_issue_labels(issue_number: int) -> list:
-    """Returns the current label names on an issue."""
+def get_issue(issue_number: int) -> dict:
+    """Fetches the full issue object (title, body, labels, ...) from the REST API.
+
+    Used so agents can read fresh issue content on any trigger (including
+    workflow_dispatch, where the event payload has no issue body).
+    """
     owner, repo = get_repo()
     url = f"{GITHUB_API}/repos/{owner}/{repo}/issues/{issue_number}"
     resp = requests.get(url, headers=_headers())
     resp.raise_for_status()
-    return [l["name"] for l in resp.json().get("labels", [])]
+    return resp.json()
+
+
+def get_issue_labels(issue_number: int) -> list:
+    """Returns the current label names on an issue."""
+    return [l["name"] for l in get_issue(issue_number).get("labels", [])]
 
 
 def get_pr_diff(pr_number: int, max_chars: int = 12000) -> str:

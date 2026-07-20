@@ -1,0 +1,63 @@
+name: Story-Point Estimator Agent
+
+on:
+  issues:
+    types: [opened, reopened, edited, labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Issue number to estimate"
+        required: true
+      force_reestimate:
+        description: "Overwrite an existing Story Points value"
+        type: boolean
+        default: false
+      dry_run:
+        description: "Analyze and comment only; do not update the Story Points field"
+        type: boolean
+        default: false
+
+# Least privilege for the default token: read code (checkout) and write issue
+# comments/labels. Project updates use PROJECT_TOKEN, not this token.
+permissions:
+  issues: write
+  contents: read
+
+# One run per issue at a time; a newer edit supersedes an in-flight run.
+concurrency:
+  group: story-points-${{ github.event.issue.number || github.event.inputs.issue_number }}
+  cancel-in-progress: true
+
+jobs:
+  estimate:
+    runs-on: ubuntu-latest
+    # For `labeled` events, only run when the trigger label is "re-estimate".
+    # All other issue actions and manual dispatches always run.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.action != 'labeled' ||
+      github.event.label.name == 're-estimate'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Estimate story points
+        working-directory: scripts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PROJECT_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || github.event.inputs.issue_number }}
+          PROJECT_OWNER: akhilajags
+          PROJECT_TITLE: "@akhilajags's Resume"
+          STORY_POINTS_FIELD: "Story Points"
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          FORCE_REESTIMATE: ${{ github.event.inputs.force_reestimate || 'false' }}
+        run: python estimate_story_points.py
