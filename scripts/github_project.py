@@ -172,7 +172,13 @@ def add_item_to_project(project_id: str, content_id: str) -> str:
 
 
 def set_number_field(project_id: str, item_id: str, field_id: str, value) -> None:
-    """Writes `value` (stored as a number) into the given number field."""
+    """Writes `value` into the given number field.
+
+    Story points are whole Fibonacci numbers, so send an integer (e.g. 3, not
+    3.0). GraphQL still declares the argument as Float! (the field's type) and
+    coerces the integer, so the stored value has no trailing decimal.
+    """
+    numeric = int(value) if float(value).is_integer() else float(value)
     mutation = """
     mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: Float!) {
       updateProjectV2ItemFieldValue(input: {
@@ -189,6 +195,6 @@ def set_number_field(project_id: str, item_id: str, field_id: str, value) -> Non
             "projectId": project_id,
             "itemId": item_id,
             "fieldId": field_id,
-            "value": float(value),
+            "value": numeric,
         },
     )
