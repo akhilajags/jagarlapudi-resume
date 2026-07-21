@@ -27,6 +27,7 @@ import subprocess
 import sys
 
 import anthropic
+import requests
 
 from github_project import (
     ProjectError,
@@ -312,7 +313,19 @@ def open_draft_pr(issue, decision, branch, base_ref, validation_results):
         f"Closes #{issue['number']}"
     )
     title = f"[One Point Fixer] Fix #{issue['number']}: {decision.get('pr_title', issue['title'])}".strip()
-    pr = create_pull_request(title=title, head=branch, base=base_ref, body=body, draft=True)
+    try:
+        pr = create_pull_request(title=title, head=branch, base=base_ref, body=body, draft=True)
+    except requests.exceptions.HTTPError as exc:
+        status = getattr(exc.response, "status_code", None)
+        if status != 403:
+            raise
+        # The default token can't open PRs unless "Allow GitHub Actions to create and
+        # approve pull requests" is enabled. Fall back to the user PAT, which can.
+        print("GITHUB_TOKEN was denied PR creation (403); retrying with PROJECT_TOKEN.")
+        pr = create_pull_request(
+            title=title, head=branch, base=base_ref, body=body, draft=True,
+            token=os.environ["PROJECT_TOKEN"],
+        )
     try:
         request_reviewers(pr["number"], [os.environ.get("REVIEWER", get_repo()[0])])
     except Exception as exc:  # non-fatal: review can be requested by hand
@@ -483,9 +496,12 @@ def main():
 
     # ---- Implement ----
     branch = branch_name(number, issue["title"])
+    # We only reach here when no agent PR is open (selection excludes those). Any
+    # remaining remote branch is an orphan from a prior run whose PR step failed, so
+    # delete it and push fresh rather than stalling every retry on "branch exists".
     if run_git(root, "ls-remote", "--heads", "origin", branch):
-        report(issue, True, True, "Skipped", f"branch {branch} already exists on origin")
-        return
+        print(f"Deleting stale branch '{branch}' left by a previous run.")
+        run_git(root, "push", "origin", "--delete", branch)
 
     try:
         changed = apply_edits(root, decision["edits"])
