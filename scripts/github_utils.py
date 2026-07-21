@@ -108,6 +108,43 @@ def get_issue_labels(issue_number: int) -> list:
     return [l["name"] for l in get_issue(issue_number).get("labels", [])]
 
 
+def create_pull_request(title: str, head: str, base: str, body: str, draft: bool = True) -> dict:
+    """Opens a pull request. Defaults to a draft so a human must mark it ready and merge."""
+    owner, repo = get_repo()
+    url = f"{GITHUB_API}/repos/{owner}/{repo}/pulls"
+    resp = requests.post(
+        url,
+        headers=_headers(),
+        json={"title": title, "head": head, "base": base, "body": body, "draft": draft},
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+
+def request_reviewers(pr_number: int, reviewers: list) -> None:
+    """Requests review from the given users. Tolerates 422 (e.g. reviewer is the PR author)."""
+    owner, repo = get_repo()
+    url = f"{GITHUB_API}/repos/{owner}/{repo}/pulls/{pr_number}/requested_reviewers"
+    resp = requests.post(url, headers=_headers(), json={"reviewers": reviewers})
+    if resp.status_code not in (200, 201, 422):
+        resp.raise_for_status()
+
+
+def find_open_pr_for_branch_prefix(prefix: str):
+    """Returns the first open PR whose head branch starts with `prefix`, else None.
+
+    Used for idempotency: skip an issue that already has an agent-opened PR.
+    """
+    owner, repo = get_repo()
+    url = f"{GITHUB_API}/repos/{owner}/{repo}/pulls"
+    resp = requests.get(url, headers=_headers(), params={"state": "open", "per_page": 100})
+    resp.raise_for_status()
+    for pr in resp.json():
+        if pr["head"]["ref"].startswith(prefix):
+            return pr
+    return None
+
+
 def get_pr_diff(pr_number: int, max_chars: int = 12000) -> str:
     """Fetches the unified diff for a PR, truncated so we don't blow the LLM context/cost on huge PRs."""
     owner, repo = get_repo()

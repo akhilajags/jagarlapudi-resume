@@ -158,6 +158,68 @@ def get_issue_node_and_item(owner, repo, issue_number, project_id, field_name):
     return issue["id"], None, None
 
 
+def list_project_issues(project_id: str, field_name: str) -> list:
+    """Returns every issue in the project with its Story Points value and issue metadata.
+
+    Each element: {number, node_id, story_points, state, locked, created_at, url,
+    repo, labels}. Pull requests and draft items are skipped.
+    """
+    query = """
+    query($projectId: ID!, $fieldName: String!, $cursor: String) {
+      node(id: $projectId) {
+        ... on ProjectV2 {
+          items(first: 100, after: $cursor) {
+            pageInfo { hasNextPage endCursor }
+            nodes {
+              value: fieldValueByName(name: $fieldName) {
+                ... on ProjectV2ItemFieldNumberValue { number }
+              }
+              content {
+                __typename
+                ... on Issue {
+                  number title state locked createdAt url
+                  repository { nameWithOwner }
+                  labels(first: 50) { nodes { name } }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    """
+    cursor = None
+    issues = []
+    while True:
+        data = graphql(query, {"projectId": project_id, "fieldName": field_name, "cursor": cursor})
+        items = (data.get("node") or {}).get("items")
+        if not items:
+            break
+        for item in items["nodes"]:
+            content = item.get("content") or {}
+            if content.get("__typename") != "Issue":
+                continue
+            value = item.get("value") or {}
+            issues.append(
+                {
+                    "number": content["number"],
+                    "title": content["title"],
+                    "story_points": value.get("number"),
+                    "state": content["state"],
+                    "locked": content["locked"],
+                    "created_at": content["createdAt"],
+                    "url": content["url"],
+                    "repo": (content.get("repository") or {}).get("nameWithOwner"),
+                    "labels": [l["name"] for l in content.get("labels", {}).get("nodes", [])],
+                }
+            )
+        if items["pageInfo"]["hasNextPage"]:
+            cursor = items["pageInfo"]["endCursor"]
+        else:
+            break
+    return issues
+
+
 def add_item_to_project(project_id: str, content_id: str) -> str:
     """Adds an issue (by its node ID) to the project; returns the new item ID."""
     mutation = """

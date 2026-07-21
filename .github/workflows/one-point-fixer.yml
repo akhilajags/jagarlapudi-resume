@@ -1,0 +1,82 @@
+name: One Point Fixer
+
+on:
+  schedule:
+    # ┌─ minute (30 = half past; keep off :00, when Actions cron is congested)
+    # │  ┌─ hour (0-23) in the timezone below
+    # │  │ ┌─ day of month (* = every)
+    # │  │ │ ┌─ month (* = every)
+    # │  │ │ │ ┌─ day of week (1-5 = Mon-Fri; 0 or 7 = Sun)
+    # To reschedule, edit these fields; to change the zone, edit `timezone`
+    # (an IANA name). Actions supports `timezone` since March 2026 and handles
+    # daylight saving automatically, so "9:30 AM Eastern" stays 9:30 local.
+    - cron: "30 9 * * 1-5"
+      timezone: "America/New_York"
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Optional issue number to process immediately"
+        required: false
+        type: string
+      dry_run:
+        description: "Validate eligibility only (no model call, branch, PR, or labels)"
+        required: true
+        default: true
+        type: boolean
+      force:
+        description: "Waive the agent:approved requirement for a specific issue"
+        required: true
+        default: false
+        type: boolean
+
+# The agent pushes a branch and opens a draft PR, so it needs write on contents
+# and pull-requests, plus issues for labels/comments. It NEVER pushes to the base
+# branch and NEVER merges (no merge step; draft PRs require a human to merge).
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+# One run per issue at a time; never cancel an in-flight run mid-push.
+concurrency:
+  group: one-point-fixer-${{ github.event.inputs.issue_number || 'scheduled' }}
+  cancel-in-progress: false
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      # Default credentials are persisted so the agent can push its own branch.
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Run One Point Fixer
+        working-directory: scripts
+        env:
+          # Workflow token: git push (branch only), draft PR, labels, comments.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # User PAT: read the personal Project's Story Points field. Never echoed.
+          PROJECT_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+          # Claude does the code reasoning/editing.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PROJECT_OWNER: akhilajags
+          PROJECT_TITLE: "@akhilajags's Resume"
+          STORY_POINTS_FIELD: "Story Points"
+          BASE_REF: main
+          REVIEWER: akhilajags
+          # Empty on scheduled runs -> real run, no force.
+          INPUT_ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
+          INPUT_DRY_RUN: ${{ github.event.inputs.dry_run }}
+          INPUT_FORCE: ${{ github.event.inputs.force }}
+        run: python one_point_fixer.py
